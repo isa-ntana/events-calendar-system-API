@@ -20,9 +20,6 @@ public class DataEventDTO { //características
     @NotNull(message = "O campo é obrigatório.")
     private EventDTO event;
 
-    @NotNull(message = "O campo é obrigatório.")
-    private String priority;
-
     public DataEventDTO() {} //padrão BEAN
 
     public LocalDate getDateBegin() {
@@ -63,13 +60,5 @@ public class DataEventDTO { //características
 
     public void setEvent(EventDTO event) {
         this.event = event;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
     }
 }

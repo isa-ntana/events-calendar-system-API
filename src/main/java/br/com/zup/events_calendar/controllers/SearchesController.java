@@ -9,9 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,19 +48,13 @@ public class SearchesController {
                     .collect(Collectors.toList());
         }
 
-        List<EventDTO> eventList = new ArrayList<>();
+        EventDTO[] eventArray = events.stream().map(DataEventDTO::getEvent).toArray(EventDTO[]::new);
 
-        for (DataEventDTO dataEventDTO : events) {
-            EventDTO event = dataEventDTO.getEvent();
-            EventDTO eventResponse = new EventDTO();
-            eventResponse.setId(event.getId());
-            eventResponse.setNameEvent(event.getNameEvent());
-            eventResponse.setDescription(event.getDescription());
-            eventResponse.setActiveEvent(event.isActiveEvent());
-            eventList.add(eventResponse);
-        }
+        EventService.selectionSort(eventArray);
 
-        Date startDate = java.sql.Date.valueOf(events.get(0).getDateBegin());
+        List<EventDTO> eventList = new ArrayList<>(Arrays.asList(eventArray));
+
+        Date startDate = events.isEmpty() ? null : java.sql.Date.valueOf(events.get(0).getDateBegin());
 
         EventsByDayDTO response = new EventsByDayDTO();
         response.setStartDate(startDate);

@@ -15,6 +15,8 @@ public class EventDTO {
     @NotNull(message = "O campo é obrigatório.")
     private boolean activeEvent;
 
+    private String priority;
+
     public EventDTO() {}
 
     public String getId() {
@@ -47,5 +49,13 @@ public class EventDTO {
 
     public void setActiveEvent(boolean activeEvent) {
         this.activeEvent = activeEvent;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

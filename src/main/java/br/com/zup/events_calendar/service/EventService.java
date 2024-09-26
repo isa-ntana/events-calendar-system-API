@@ -34,9 +34,9 @@ public class EventService { //utilidade, o que faz
         eventDTO.setNameEvent(dataEvent.getEvent().getNameEvent());
         eventDTO.setDescription(dataEvent.getEvent().getDescription());
         eventDTO.setActiveEvent(dataEvent.getEvent().isActiveEvent());
+        eventDTO.setPriority(dataEvent.getEvent().getPriority());
 
         newDataEventDTO.setEvent(eventDTO);
-        newDataEventDTO.setPriority(dataEvent.getPriority());
 
         dataEvents.add(newDataEventDTO);
         return newDataEventDTO;
@@ -57,6 +57,33 @@ public class EventService { //utilidade, o que faz
                         (eventDTO -> eventDTO.getDateBegin().isAfter(today) &&
                                      eventDTO.getDateBegin().isBefore(targetDate))
                                         .collect(Collectors.toList());
+    }
+
+    public static void selectionSort(EventDTO[] eventos) {
+        int posicao_menor;
+        EventDTO auxiliar;
+
+        Map<String, Integer> prioridadeMap = Map.of(
+                "Muito alta", 1,
+                "Alta", 2,
+                "Media", 3,
+                "Baixa", 4
+        );
+
+        for (int indice = 0; indice < eventos.length; indice++) {
+            posicao_menor = indice;
+
+            for (int subIndice = indice + 1; subIndice < eventos.length; subIndice++) {
+                if (prioridadeMap.get(eventos[subIndice].getPriority()) <
+                        prioridadeMap.get(eventos[posicao_menor].getPriority())) {
+                    posicao_menor = subIndice;
+                }
+            }
+
+            auxiliar = eventos[posicao_menor];
+            eventos[posicao_menor] = eventos[indice];
+            eventos[indice] = auxiliar;
+        }
     }
 
 }
