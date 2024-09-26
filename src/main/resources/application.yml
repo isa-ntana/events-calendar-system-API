@@ -1,0 +1,6 @@
+sprint:
+  application:
+    name: events_calendar
+
+server:
+  port: 8000
