@@ -1,8 +1,6 @@
 package br.com.zup.events_calendar.controllers;
 
-import br.com.zup.events_calendar.controllers.dtos.DataEventDTO;
-import br.com.zup.events_calendar.controllers.dtos.EventDTO;
-import br.com.zup.events_calendar.controllers.dtos.EventsByDayDTO;
+import br.com.zup.events_calendar.controllers.dtos.*;
 import br.com.zup.events_calendar.service.EventService;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -37,29 +35,34 @@ public class SearchesController {
                 events = eventService.pushEventsInNextDays(days, events);
             } else {
                 events = events.stream().filter(
-                        eventDTO -> eventDTO.getDateBegin().isBefore(LocalDate.now()))
+                                eventDTO -> eventDTO.getDateBegin().isBefore(LocalDate.now()))
                         .collect(Collectors.toList());
             }
         }
 
         if (activeEvent != null) {
             events = events.stream().filter(
-                    eventDTO -> eventDTO.getEvent().isActiveEvent() == activeEvent)
+                            eventDTO -> eventDTO.getEvent().isActiveEvent() == activeEvent)
                     .collect(Collectors.toList());
         }
 
-        EventDTO[] eventArray = events.stream().map(DataEventDTO::getEvent).toArray(EventDTO[]::new);
+        Map<LocalDate, List<EventDTO>> eventsByDate = new HashMap<>();
+        for (DataEventDTO dataEvent : events) {
+            LocalDate date = dataEvent.getDateBegin();
+            eventsByDate.computeIfAbsent(date, key -> new ArrayList<>()).add(dataEvent.getEvent());
+        }
 
-        EventService.selectionSort(eventArray);
+        List<EventsByDayDTO> responseList = new ArrayList<>();
+        for (Map.Entry<LocalDate, List<EventDTO>> entry : eventsByDate.entrySet()) {
+            EventDTO[] eventArray = entry.getValue().toArray(new EventDTO[0]);
+            EventService.selectionSort(eventArray);
 
-        List<EventDTO> eventList = new ArrayList<>(Arrays.asList(eventArray));
+            EventsByDayDTO response = new EventsByDayDTO();
+            response.setStartDate(entry.getKey());
+            response.setEvents(Arrays.asList(eventArray));
+            responseList.add(response);
+        }
 
-        Date startDate = events.isEmpty() ? null : java.sql.Date.valueOf(events.get(0).getDateBegin());
-
-        EventsByDayDTO response = new EventsByDayDTO();
-        response.setStartDate(startDate);
-        response.setEvents(eventList);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseList);
     }
 }
