@@ -31,7 +31,7 @@ public class EventController { //funções no homem post
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteEventByID(@PathVariable @RequestParam(name = "id") String id) {
+    public ResponseEntity<?> deleteEventByID(@PathVariable String id) {
         DataEventDTO dataEventDTO = eventService.deleteEvent(id);
         return ResponseEntity.status(204).body(dataEventDTO);
     }

@@ -1,5 +1,6 @@
 package br.com.zup.events_calendar.controllers.dtos;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.*;
@@ -17,6 +18,7 @@ public class DataEventDTO { //características
     @NotNull(message = "O campo é obrigatório.")
     private LocalTime timeEnd;
 
+    @Valid
     @NotNull(message = "O campo é obrigatório.")
     private EventDTO event;
 
